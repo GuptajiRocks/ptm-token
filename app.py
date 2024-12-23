@@ -46,6 +46,30 @@ def accept_details():
 
     return render_template("results.html", results=rows)
 
+@app.route("/removeAll")
+def start_over():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users")
+    conn.commit()
+    cursor.execute("SELECT id, name, class FROM users")
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+
+    return render_template("results.html", results=rows)
+
+@app.route("/results")
+def only_results_page():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, class FROM users")
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+
+    return render_template("results.html", results=rows)
+
 
 if __name__ == "__main__":
     init_db()
