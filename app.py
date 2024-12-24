@@ -13,13 +13,7 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute('''
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    class TEXT NOT NULL
-)
-''')
+    cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,class TEXT NOT NULL)")
     conn.commit()
     conn.close()
 
