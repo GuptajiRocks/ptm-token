@@ -1,12 +1,12 @@
 from flask import Flask, request, render_template
 import sqlite3
+import pyodbc
 
 app = Flask(__name__)
 
-DATABASE = "example.db"
+# DATABASE = "example.db"
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
+    conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER=arihantsqldbs.database.windows.net;DATABASE=freeDB;UID=arihant@arihantsqldbs;PWD=jesus@12')
     return conn
 
 def init_db():
