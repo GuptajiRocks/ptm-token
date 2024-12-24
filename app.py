@@ -64,9 +64,9 @@ def only_results_page():
 
     return render_template("results.html", results=rows)
 
+init_db()
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
     
 
