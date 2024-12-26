@@ -1,20 +1,27 @@
 from flask import Flask, request, render_template
-import pyodbc
+import os
+from psycopg2 import pool
+from dotenv import load_dotenv
+
+load_dotenv()
+
+connection_string = os.getenv('DATABASE_URL')
 
 app = Flask(__name__)
 
-# DATABASE = "example.db"
 def get_db_connection():
-    conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER=arihantsqldbs.database.windows.net;DATABASE=freeDB;UID=arihant@arihantsqldbs;PWD=jesus@12')
+    connection_pool = pool.SimpleConnectionPool(1,10,connection_string)
+    conn = connection_pool.getconn()
     return conn
+    
 
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# def init_db():
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,class TEXT NOT NULL)")
-    conn.commit()
-    conn.close()
+#     cursor.execute("")
+#     conn.commit()
+#     conn.close()
 
 
 @app.route("/")
@@ -29,12 +36,12 @@ def accept_details():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO users (name, class)
-        VALUES (?, ?)
+        INSERT INTO temp (name, class)
+        VALUES (%s, %s)
     ''', (name, classs))
     conn.commit()
 
-    cursor.execute("SELECT id, name, class FROM users")
+    cursor.execute("SELECT id, name, class FROM temp;")
     rows = cursor.fetchall()
 
     return render_template("results.html", results=rows)
@@ -43,9 +50,9 @@ def accept_details():
 def start_over():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM users")
+    cursor.execute("DELETE FROM temp;")
     conn.commit()
-    cursor.execute("SELECT id, name, class FROM users")
+    cursor.execute("SELECT id, name, class FROM temp;")
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -56,14 +63,13 @@ def start_over():
 def only_results_page():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, name, class FROM users")
+    cursor.execute("SELECT id, name, class FROM temp;")
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
 
     return render_template("results.html", results=rows)
 
-init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
