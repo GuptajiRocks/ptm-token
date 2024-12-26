@@ -1,13 +1,25 @@
-import pyodbc
 
+import os
+from psycopg2 import pool
+from dotenv import load_dotenv
 
-conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER=arihantsqldbs.database.windows.net;DATABASE=freeDB;UID=arihant@arihantsqldbs;PWD=jesus@12')
-cursor = conn.cursor()
+load_dotenv()
 
-# cursor.execute("DELETE from nc")
-# conn.commit()
-# cursor.execute("INSERT INTO nc(name, college) VALUES ('Vishnu','BU')")
-# conn.commit()
-cursor.execute("SELECT * FROM nc")
-result = cursor.fetchall()
-print(result)
+connection_string = os.getenv('DATABASE_URL')
+
+connection_pool = pool.SimpleConnectionPool(1,10,connection_string)
+
+# Check if the pool was created successfully
+if connection_pool:
+    print("Connection pool created successfully")
+
+# Get a connection from the pool
+conn = connection_pool.getconn()
+
+# Create a cursor object
+cur = conn.cursor()
+cur.execute("SELECT * FROM temp;")
+tables = cur.fetchall()
+
+print(tables)
+
