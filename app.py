@@ -1,9 +1,6 @@
 from flask import Flask, request, render_template
 import os
 from psycopg2 import pool
-# from dotenv import load_dotenv
-
-# load_dotenv()
 
 connection_string = os.environ.get('DATABASE_URL')
 
@@ -13,15 +10,6 @@ def get_db_connection():
     connection_pool = pool.SimpleConnectionPool(1,10,connection_string)
     conn = connection_pool.getconn()
     return conn
-    
-
-# def init_db():
-#     conn = get_db_connection()
-#     cursor = conn.cursor()
-
-#     cursor.execute("")
-#     conn.commit()
-#     conn.close()
 
 
 @app.route("/")
