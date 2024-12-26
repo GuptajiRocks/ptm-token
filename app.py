@@ -1,11 +1,11 @@
 from flask import Flask, request, render_template
 import os
 from psycopg2 import pool
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-connection_string = os.getenv('DATABASE_URL')
+connection_string = os.environ.get('DATABASE_URL')
 
 app = Flask(__name__)
 
